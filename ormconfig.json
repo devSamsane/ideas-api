@@ -5,7 +5,7 @@
   "username": "postgres",
   "password": "",
   "database": "ideas",
-  "synchronise": true,
+  "synchronize": true,
   "logging": true,
   "entities": ["./src/**/*.entity.ts", "./dist/**/*.entity.js"]
 }
