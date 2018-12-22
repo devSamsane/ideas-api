@@ -7,4 +7,6 @@ export class IdeaResponseObjectDTO {
   idea: string;
   description: string;
   author: UserResponseObjectDTO;
+  upvotes?: number;
+  downvotes?: number;
 }
