@@ -7,6 +7,7 @@ import { IdeaDTO } from './idea.dto';
 import { UserEntity } from 'src/user/user.entity';
 import { IdeaResponseObjectDTO } from './idea-response.dto';
 import { Votes } from '../shared/votes.enum';
+import { isDate } from 'util';
 
 @Injectable()
 export class IdeaService {
@@ -16,11 +17,14 @@ export class IdeaService {
   ) { }
 
   private toResponseObject(idea: IdeaEntity): IdeaResponseObjectDTO {
-    const responseObject: any = { ...idea, author: idea.author.toResponseObject(false) };
-    if (responseObject) {
+    const responseObject: any = {
+      ...idea,
+      author: idea.author ? idea.author.toResponseObject(false) : null,
+    };
+    if (idea.upvotes) {
       responseObject.upvotes = idea.upvotes.length;
     }
-    if (responseObject) {
+    if (idea.downvotes) {
       responseObject.downvotes = idea.downvotes.length;
     }
     return responseObject;
