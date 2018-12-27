@@ -7,6 +7,18 @@ type User {
   comments: [Comment!]
 }
 
+type Auth {
+  token: String!
+  username: String!
+}
+
 type Query {
   users(page: Int): [User!]
+  user(username: String!): User
+  whoami: User
+}
+
+type Mutation {
+  login(username: String!, password: String!): Auth!
+  register(username: String!, password: String!): Auth!
 }
