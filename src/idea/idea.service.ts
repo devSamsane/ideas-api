@@ -16,7 +16,7 @@ export class IdeaService {
     @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
   ) { }
 
-  private toResponseObject(idea: IdeaEntity): IdeaResponseObjectDTO {
+  private ideaToResponseObject(idea: IdeaEntity): IdeaResponseObjectDTO {
     const responseObject: any = {
       ...idea,
       author: idea.author ? idea.author.toResponseObject(false) : null,
@@ -63,14 +63,14 @@ export class IdeaService {
       skip: 25 * (page - 1),
       order: newest && { created: 'DESC'},
     });
-    return ideas.map(idea => this.toResponseObject(idea));
+    return ideas.map(idea => this.ideaToResponseObject(idea));
   }
 
   async create(userId: string, data: IdeaDTO): Promise<IdeaResponseObjectDTO> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const idea = await this.ideaRepository.create({ ...data, author: user });
     await this.ideaRepository.save(idea);
-    return this.toResponseObject(idea);
+    return this.ideaToResponseObject(idea);
   }
 
   async read(id: string): Promise<IdeaResponseObjectDTO> {
@@ -78,7 +78,7 @@ export class IdeaService {
     if (!idea) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    return this.toResponseObject(idea);
+    return this.ideaToResponseObject(idea);
   }
 
   async udpate(id: string, userId: string, data: Partial<IdeaDTO>): Promise<IdeaResponseObjectDTO> {
@@ -89,7 +89,7 @@ export class IdeaService {
     this.ensureOwnership(idea, userId);
     await this.ideaRepository.update({ id }, data);
     idea = await this.ideaRepository.findOne({ where: { id }, relations: ['author', 'comments'] });
-    return this.toResponseObject(idea);
+    return this.ideaToResponseObject(idea);
   }
 
   async destroy(id: string, userId: string) {
@@ -99,7 +99,7 @@ export class IdeaService {
     }
     this.ensureOwnership(idea, userId);
     await this.ideaRepository.delete({ id });
-    return this.toResponseObject(idea);
+    return this.ideaToResponseObject(idea);
   }
 
   async upvote(id: string, userId: string) {
@@ -107,7 +107,7 @@ export class IdeaService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     idea = await this.vote(idea, user, Votes.UP);
-    return idea;
+    return this.ideaToResponseObject(idea);
   }
 
   async downvote(id: string, userId: string) {
@@ -115,7 +115,7 @@ export class IdeaService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     idea = await this.vote(idea, user, Votes.DOWN);
-    return idea;
+    return this.ideaToResponseObject(idea);
   }
 
   async bookmark(id: string, userId: string) {
