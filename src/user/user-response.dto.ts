@@ -5,5 +5,6 @@ export class UserResponseObjectDTO {
   username: string;
   created: Date;
   token?: string;
+  ideas?: IdeaEntity[];
   bookmarks?: IdeaEntity[];
 }

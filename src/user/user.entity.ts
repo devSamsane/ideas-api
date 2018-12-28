@@ -28,16 +28,16 @@ export class UserEntity {
 
   toResponseObject(showToken: boolean = true): UserResponseObjectDTO {
     const { id, created, username, token } = this;
-    const responseObject: any = { id, created, username };
+    const responseObject: UserResponseObjectDTO = { id, created, username };
 
-    if (showToken) {
-      responseObject.token = token;
-    }
     if (this.ideas) {
       responseObject.ideas = this.ideas;
     }
     if (this.bookmarks) {
       responseObject.bookmarks = this.bookmarks;
+    }
+    if (showToken) {
+      responseObject.token = token;
     }
     return responseObject;
   }
@@ -46,7 +46,7 @@ export class UserEntity {
     return await bcrypt.compare(attempt, this.password);
   }
 
-  private get token() {
+  private get token(): string {
     const { id, username } = this;
     return jwt.sign(
       {
